@@ -231,9 +231,9 @@ num_cycles = 10
 #b1,b2,b3 = 3,1,2
 
 # [[288,12,18]]
-#ell,m = 12,12
-#a1,a2,a3 = 3,2,7
-#b1,b2,b3 = 3,1,2
+ell,m = 12,12
+a1,a2,a3 = 3,2,7
+b1,b2,b3 = 3,1,2
 
 # [[170, 16, 10]] , 
 # ell,m = 17,5
@@ -294,9 +294,9 @@ num_cycles = 10
 # Bterm = 'x2+y12+y16'.split('+')
 
 # [[340, 32, 10]]
-ell,m = 10, 17
-Aterm = 'x2+y6+y11'.split('+')
-Bterm = 'x8+y7+y10'.split('+')
+# ell,m = 10, 17
+# Aterm = 'x2+y6+y11'.split('+')
+# Bterm = 'x8+y7+y10'.split('+')
 
 # code length
 n = 2*m*ell
