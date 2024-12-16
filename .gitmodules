@@ -1,0 +1,5 @@
+
+
+[submodule "funsearch"]
+	path = funsearch
+	url = https://github.com/sqrta/funsearch.git
