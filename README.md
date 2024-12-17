@@ -7,7 +7,7 @@ git submodule add https://github.com/sqrta/funsearch.git
 pip install -r requirements.txt
 ```
 
-## Bivariate Bycycle Code Evaluation
+## Bivariate Bicycle Code Evaluation
 
 We reuse the simulation software from [BCGMRY] Sergey Bravyi, Andrew Cross, Jay Gambetta, Dmitri Maslov, Patrick Rall, Theodore Yoder, High-threshold and low-overhead fault-tolerant quantum memory https://arxiv.org/abs/2308.07915. The original git repo is [here](https://github.com/sbravyi/BivariateBicycleCodes). The evaluation code is in the `BivariateBicycleCodes` folder
 
