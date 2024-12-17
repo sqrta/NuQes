@@ -66,13 +66,15 @@ with open("skeleton.py", "r") as f:
     inputs = [None]
     main(content, inputs, conf)
 ```
-The `main` function of Funsearch recieves three inputs. `content` is the skeleton of the program that needs to be evolve. The function to be evolved should be decorated with `@funsearch.evolve`. `conf` is the configuration sent to Funsearch. The class Config should be configured withh
+The `main` function of Funsearch recieves three inputs. `content` is the skeleton of the program that needs to be evolve. The function to be evolved should be decorated with `@funsearch.evolve`. `conf` is the configuration sent to Funsearch. The class Config should be configured with
 
 - sandbox : define how to evaluate each candidate function evolved by Funsearch. It should return the score of the candidate function and a boolean variable representing whether the execution is successful.
-- ProgramsDatabaseConfig: configuring the database (e.g. number of islands)
+- ProgramsDatabaseConfig: configuring the program database (e.g. number of islands)
 - prompt_manipulate: define how to manipulate the prompt before sending it to the LLM. The input to the function `prompt_manipulate` are two functions sampled from the database.
-- iterations: Funsearch will terminate after reaching the iterations number.
+- iterations: Funsearch will terminate after reaching the `iterations` number.
   
 optional
 
 - init_template: initial possible implementation of the function to be evolved. Will be evaluated and inserted into the database at the starting point.
+
+You can modify the method "sample" in the class `Sampler` in the file `funsearch/implementation/sampler.py` and use `self._database._best_score_per_island[Island_index]` and `self._database._best_program_per_island[Island_index]` to extract the best program have found from an island during the search.
