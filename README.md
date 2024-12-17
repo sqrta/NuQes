@@ -68,7 +68,7 @@ with open("skeleton.py", "r") as f:
 ```
 The `main` function of Funsearch recieves three inputs. `content` is the skeleton of the program that needs to be evolve. The function to be evolved should be decorated with `@funsearch.evolve`. `conf` is the configuration sent to Funsearch. The class Config should be configured withh
 
-- sandbox : define how to evaluate each candidate function evolved by Funsearch
+- sandbox : define how to evaluate each candidate function evolved by Funsearch. It should return the score of the candidate function and a boolean variable representing whether the execution is successful.
 - ProgramsDatabaseConfig: configuring the database (e.g. number of islands)
 - prompt_manipulate: define how to manipulate the prompt before sending it to the LLM. The input to the function `prompt_manipulate` are two functions sampled from the database.
 - iterations: Funsearch will terminate after reaching the iterations number.
