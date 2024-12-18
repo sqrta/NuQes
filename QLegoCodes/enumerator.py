@@ -177,7 +177,6 @@ def eval_code(stabilizers, k, px=0.01, pz=0.05):
     code = codeTN(stabilizers, isStab=True)
     n = code.length
     APoly = get_enum_tensor(code, [])[0]
-    # print(simp_poly(APoly),n,k)
     stab_group = stabilizer_group(stabilizers)
     K = K_from_poly(simp_poly(APoly), n, k)
     return ABzx(stab_group, px, 1 - px, pz, 1 - pz, k, K)[1]
