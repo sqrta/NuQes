@@ -30,10 +30,11 @@ for file in jsonNames:
 
 def funcScore():
     score = 0
+    best = 0
+    count = 1
     for key in allCodes.keys():
         l, m = key
-        best = 0
-        count = 1
+
         for code in allCodes[key]:
             A = code["A"]
             if priority(A, l, m):
@@ -42,7 +43,7 @@ def funcScore():
                 if r > best:
                     best = r
 
-        score += best / count
+    score = best / count
     return score
 
 
