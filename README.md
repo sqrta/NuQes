@@ -7,6 +7,8 @@ git submodule add https://github.com/sqrta/funsearch.git
 pip install -r requirements.txt
 ```
 
+You need to call your LLM by defining `class LLM._draw_sample(self, prompt: str) -> str` in `funsearch/implementation/sampler.py`, where `prompt` is the input to the LLM. Your `LLM._draw_sample` should return a valid pure python function in the python string format.
+
 ## Bivariate Bicycle Code Evaluation
 
 We reuse the simulation software from [BCGMRY] Sergey Bravyi, Andrew Cross, Jay Gambetta, Dmitri Maslov, Patrick Rall, Theodore Yoder, High-threshold and low-overhead fault-tolerant quantum memory https://arxiv.org/abs/2308.07915. The original git repo is [here](https://github.com/sbravyi/BivariateBicycleCodes). The evaluation code is in the `BivariateBicycleCodes` folder
@@ -42,7 +44,7 @@ python benchEval.py
 
 ## Utilize Funsearch to Search
 
-This repo uses a fork version of Funsearch. The original version is from this [repo](https://github.com/google-deepmind/funsearch) which accompanies the publication 
+This repo uses a fork version of Funsearch. The original version is from this [repo](https://github.com/google-deepmind/funsearch) which accompanies the publication. 
 
 Romera-Paredes, B. et al. [Mathematical discoveries from program search with large language models](https://www.nature.com/articles/s41586-023-06924-6). *Nature* (2023)
 
