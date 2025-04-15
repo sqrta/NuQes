@@ -42,13 +42,35 @@ cd QLegoCodes
 python benchEval.py
 ```
 
-## Utilize Funsearch to Search
+## QECC Search with FunSearch
 
-This repo uses a fork version of Funsearch. The original version is from this [repo](https://github.com/google-deepmind/funsearch) which accompanies the publication. 
+This repository leverages a customized fork of FunSearch, originally developed by Google DeepMind and available [here](https://github.com/google-deepmind/funsearch), to automate the search for effective heuristic functions in Bivariate Bicycle code discovery.
 
-Romera-Paredes, B. et al. [Mathematical discoveries from program search with large language models](https://www.nature.com/articles/s41586-023-06924-6). *Nature* (2023)
+> **Reference:**
+> Romera-Paredes, B. et al. [Mathematical discoveries from program search with large language models](https://www.nature.com/articles/s41586-023-06924-6). *Nature* (2023)
 
-An example is shown in `BBcodeSearch/main.py` for how to configure Funsearch for searching heuristic functions in the Bivariate Bicycle code search. 
+---
+
+### How FunSearch Works
+
+FunSearch integrates large language models (LLMs) with evolutionary algorithms to optimize program synthesis:
+
+- **LLM as Program Sampler:**
+The LLM generates new program variants based on provided prompts.
+- **Evaluator Function:**
+Each candidate program is scored using a user-defined evaluation function.
+- **Evolutionary Loop:**
+    - Top-performing programs are stored in a database.
+    - The LLM creates new variants by combining or reworking the best candidates.
+    - This process repeats until a stopping criterion is met (e.g., convergence or iteration limit).
+- **Termination:**
+After the specified number of iterations, the program with the highest score is selected as the result.
+
+---
+
+### Bivariate Bicycle Code Search Example
+
+An example configuration for Bivariate Bicycle code search is provided in `BBcodeSearch/main.py`. This demonstrates how to set up FunSearch to evolve heuristic functions tailored for this problem.
 
 ```python
 with open("skeleton.py", "r") as f:
@@ -68,15 +90,50 @@ with open("skeleton.py", "r") as f:
     inputs = [None]
     main(content, inputs, conf)
 ```
-The `main` function of Funsearch recieves three inputs. `content` is the skeleton of the program that needs to be evolve. The function to be evolved should be decorated with `@funsearch.evolve`. `conf` is the configuration sent to Funsearch. The class Config should be configured with
 
-- sandbox : define how to evaluate each candidate function evolved by Funsearch. It should return the score of the candidate function and a boolean variable representing whether the execution is successful.
-- ProgramsDatabaseConfig: configuring the program database (e.g. number of islands)
-- prompt_manipulate: define how to manipulate the prompt before sending it to the LLM. The input to the function `prompt_manipulate` are two functions sampled from the database.
-- iterations: Funsearch will terminate after reaching the `iterations` number.
-  
-optional
 
-- init_template: initial possible implementation of the function to be evolved. Will be evaluated and inserted into the database at the starting point.
+#### Key Components
 
-You can modify the method "sample" in the class `Sampler` in the file `funsearch/implementation/sampler.py` and use `self._database._best_score_per_island[Island_index]` and `self._database._best_program_per_island[Island_index]` to extract the best program have found from an island during the search.
+- **`main` Function:**
+Accepts three arguments:
+    - `content`: The program skeleton to be evolved (should include a function decorated with `@funsearch.evolve`).
+    - `inputs`: Input data for evaluation (can be `[None]` if not needed).
+    - `conf`: Configuration object for FunSearch.
+- **Sandbox (Evaluator):**
+Defines how each candidate function is evaluated. The `score` function writes the candidate to `Priority.py`, runs `evalFunc.py`, and reads the resulting score from a file.
+
+```python
+def score(prog):
+    with open("Priority.py", "w") as f:
+        f.write(prog)
+    os.system("python3 evalFunc.py")
+    with open("result", "r") as f:
+        res = f.read().rstrip()
+        result = float(res)
+    return result, True
+```
+
+- **ProgramsDatabaseConfig:**
+Configures the program database, such as the number of islands (parallel search populations).
+- **Prompt Manipulation:**
+Allows customization of the prompt sent to the LLM. For example, you can prepend a custom prompt head:
+
+```python
+def prompt_manipulate(prompt):
+    with open("prompt_head.txt", "r") as f:
+        head = f.read()
+    return head + "\n" + prompt
+```
+
+- **Iterations:**
+Sets the number of evolutionary cycles before termination.
+- **Optional: `init_template`:**
+Specifies initial implementations to seed the search.
+
+---
+
+### Customization Tips
+
+- To access the best program found in each island during the search, modify the `sample` method in the `Sampler` class (`funsearch/implementation/sampler.py`). Use:
+    - `self._database._best_score_per_island[Island_index]`
+    - `self._database._best_program_per_island[Island_index]`
