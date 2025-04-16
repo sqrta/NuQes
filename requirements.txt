@@ -4,3 +4,4 @@ scipy
 numpy
 sympy
 absl-py
+galois

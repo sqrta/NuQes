@@ -7,11 +7,25 @@ git submodule add https://github.com/sqrta/funsearch.git
 pip install -r requirements.txt
 ```
 
+This framework also use [gap](https://www.gap-system.org/) system to compute the distance of large-size QEC codes.
+Install gap following its [installation tutorial](https://www.gap-system.org/install/) and set the path to the executable `gap` file is installed by modifying the file `BBcodeSearch/distance/gap_path.py`.
+
 You need to call your LLM by defining `class LLM._draw_sample(self, prompt: str) -> str` in `funsearch/implementation/sampler.py`, where `prompt` is the input to the LLM. Your `LLM._draw_sample` should return a valid pure python function in the python string format.
 
 ## Result Reproduction
 
 ### Bivariate Bicycle Codes
+
+#### Code Distance Reproduction
+
+Compute the distance of the [[170,16,10]] and the [[288,12,22]] codes in the paper
+```
+cd BBcpdeSearch/distance
+python codeD.py
+cd ../../
+```
+
+#### Error Threshold Reproduction
 
 We reuse the simulation software from [BCGMRY] Sergey Bravyi, Andrew Cross, Jay Gambetta, Dmitri Maslov, Patrick Rall, Theodore Yoder, High-threshold and low-overhead fault-tolerant quantum memory https://arxiv.org/abs/2308.07915. The original git repo is [here](https://github.com/sbravyi/BivariateBicycleCodes). The evaluation code is in the `BivariateBicycleCodes` folder
 
@@ -44,7 +58,7 @@ cd QLegoCodes
 python benchEval.py
 ```
 
-## QECC Search with FunSearch
+## Usage QECC Search with FunSearch
 
 This repository leverages a customized fork of FunSearch, originally developed by Google DeepMind and available [here](https://github.com/google-deepmind/funsearch), to automate the search for effective heuristic functions in Bivariate Bicycle code discovery.
 
@@ -72,7 +86,7 @@ After the specified number of iterations, the program with the highest score is 
 
 ### Bivariate Bicycle Code Search Example
 
-NuQes search codes in two steps: (1) evolve a heuristic function through FunSearch; (2) search large-size QEC codes guided by the heuristic function generated in step 1. An example configuration for evolving a heuristic function through FunSearch for further Bivariate Bicycle code search is provided in `BBcodeSearch/main.py`. You can run
+NuQes search codes in two steps: (1) evolve a heuristic function through FunSearch; (2) search large-size QEC codes guided by the heuristic function generated in step 1. An example configuration for evolving a heuristic function through FunSearch for further Bivariate Bicycle code search is provided in `BBcodeSearch/main.py`. Make sure you have implemented `class LLM._draw_sample(self, prompt: str) -> str` in `funsearch/implementation/sampler.py` with your LLm backend. You can run
 ```
 cd BBcodeSearch
 python main.py
