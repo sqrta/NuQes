@@ -11,10 +11,13 @@ def score(prog):
     with open("Priority.py", "w") as f:
         f.write(prog)
     os.system("python3 evalFunc.py")
-    with open("result", "r") as f:
-        res = f.read().rstrip()
-        result = float(res)
-    return result, True
+    try:
+        with open("result", "r") as f:
+            res = f.read().rstrip()
+            result = float(res)
+        return result, True
+    except:
+        return 0, False
 
 
 def prompt_manipulate(prompt):

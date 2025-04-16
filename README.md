@@ -9,7 +9,9 @@ pip install -r requirements.txt
 
 You need to call your LLM by defining `class LLM._draw_sample(self, prompt: str) -> str` in `funsearch/implementation/sampler.py`, where `prompt` is the input to the LLM. Your `LLM._draw_sample` should return a valid pure python function in the python string format.
 
-## Bivariate Bicycle Code Evaluation
+## Result Reproduction
+
+### Bivariate Bicycle Codes
 
 We reuse the simulation software from [BCGMRY] Sergey Bravyi, Andrew Cross, Jay Gambetta, Dmitri Maslov, Patrick Rall, Theodore Yoder, High-threshold and low-overhead fault-tolerant quantum memory https://arxiv.org/abs/2308.07915. The original git repo is [here](https://github.com/sbravyi/BivariateBicycleCodes). The evaluation code is in the `BivariateBicycleCodes` folder
 
@@ -33,7 +35,7 @@ python decoder_run.py n k d [error_rate] [iterations]
 ``` 
 to simulate the error of the [[n, k, d]] code. For example `python decoder_run.py 288 12 22 0.0035 10000` will simulate the logical error rate of the [[288, 12, 22]] code with base error 0.0035 for 10000 iterations. `python decoder_run.py 170 16 10 0.003 20000` will simulate the logical error rate of the [[170, 16, 10]] code with base error 0.0035 for 20000 iterations.
 
-## Quantum Lego Codes Evaluation
+### Quantum Lego Codes
 
 We store the check matrix of all codes we list in the Table 2 under different noise model in the folder `QLegoCodes/foundBest`. To reproduce the result in Table 2, run the command below
 
@@ -70,9 +72,17 @@ After the specified number of iterations, the program with the highest score is 
 
 ### Bivariate Bicycle Code Search Example
 
-An example configuration for Bivariate Bicycle code search is provided in `BBcodeSearch/main.py`. This demonstrates how to set up FunSearch to evolve heuristic functions tailored for this problem.
+NuQes search codes in two steps: (1) evolve a heuristic function through FunSearch; (2) search large-size QEC codes guided by the heuristic function generated in step 1. An example configuration for evolving a heuristic function through FunSearch for further Bivariate Bicycle code search is provided in `BBcodeSearch/main.py`. You can run
+```
+cd BBcodeSearch
+python main.py
+```
+for test. The key part of the code is shown below.
 
 ```python
+from funsearch import main
+from config import Config, ProgramsDatabaseConfig, Sandbox
+
 with open("skeleton.py", "r") as f:
     content = f.read()
     sandbox = Sandbox(score)
@@ -96,21 +106,37 @@ with open("skeleton.py", "r") as f:
 
 - **`main` Function:**
 Accepts three arguments:
-    - `content`: The program skeleton to be evolved (should include a function decorated with `@funsearch.evolve`).
+    - `content`: The program skeleton to be evolved (should include a function decorated with `@funsearch.evolve`). An example is shown in `BBcodeSearch/skeleton.py`
     - `inputs`: Input data for evaluation (can be `[None]` if not needed).
     - `conf`: Configuration object for FunSearch.
 - **Sandbox (Evaluator):**
-Defines how each candidate function is evaluated. The `score` function writes the candidate to `Priority.py`, runs `evalFunc.py`, and reads the resulting score from a file.
+  
+Defines how each candidate function is evaluated. The `Sandbox` class should be initialized with a function following:
+```python
+class Sandbox:
+    """Sandbox for executing generated code."""
+
+    def __init__(self, func2Run):
+        # func2Run:
+        # input: str, a function sampled by LLM
+        # output: (float, bool), score of the program, return False if the evaluation fails else True
+        self._func2Run = func2Run
+```
+
+In this example, it is initialized with a `score` function. The `score` function writes the candidate to `Priority.py`, runs `evalFunc.py`,  which sifts out small-size BB codes stored in `BBcodeSearch/small` based on the heuristic function sampled by LLM and written in `Priority.py` and output a float score in file `result`. Then the `score` function reads the resulting score from the file `result` and returns it to FunSearch.
 
 ```python
 def score(prog):
     with open("Priority.py", "w") as f:
         f.write(prog)
     os.system("python3 evalFunc.py")
-    with open("result", "r") as f:
-        res = f.read().rstrip()
-        result = float(res)
-    return result, True
+    try:
+        with open("result", "r") as f:
+            res = f.read().rstrip()
+            result = float(res)
+        return result, True
+    except:
+        return 0, False
 ```
 
 - **ProgramsDatabaseConfig:**
@@ -130,10 +156,6 @@ Sets the number of evolutionary cycles before termination.
 - **Optional: `init_template`:**
 Specifies initial implementations to seed the search.
 
----
-
-### Customization Tips
-
-- To access the best program found in each island during the search, modify the `sample` method in the `Sampler` class (`funsearch/implementation/sampler.py`). Use:
+- **Fetch Result:** to access the best program found in each island during the search, modify the `sample` method in the `Sampler` class (`funsearch/implementation/sampler.py`). Use:
     - `self._database._best_score_per_island[Island_index]`
     - `self._database._best_program_per_island[Island_index]`
