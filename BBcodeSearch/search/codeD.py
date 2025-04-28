@@ -26,11 +26,13 @@ def get_distance(proc, Hx, Hz):
 
     writeMatrix(f"Hx.mtx", Hx)
     writeMatrix(f"Hz.mtx", Hz)
-    write(proc, f'lisX:=ReadMTXE("Hx.mtx",0);;')
-    write(proc, f'lisZ:=ReadMTXE("Hz.mtx",0);;')
+    write(proc, f'lisX:=ReadMTXE("Hx.mtx",0);;lisZ:=ReadMTXE("Hz.mtx",0);;\n')
+    # write(proc, f'')
     write(proc, f"d:=DistRandCSS(lisX[3],lisZ[3],100,1,2:field:=GF(2));")
-    write(proc, "d;")
-    d = int(read(proc))
+    # write(proc, "d;")
+    result = read(proc)
+    # print(f"res: {result}")
+    d = int(result)
     return d
 
 
@@ -92,25 +94,26 @@ def mat(p):
     return res
 
 
-gap = start([gap_path, "-L", "workplace", "-q", "-b"])
-l, m = 17, 5
-r = get_x(l, m)
-s = get_y(l, m)
-code1 = (["x1", "x16", "y4"], ["x4", "x13", "y1"])
-A = sumMat([mat(t) for t in code1[0]])
-B = sumMat([mat(t) for t in code1[1]])
-k, d = Get_kd_BBCode(gap, A, B, l, m)
+if __name__ == "__main__":
+    gap = start([gap_path, "-L", "workplace", "-q", "-b"])
+    l, m = 17, 5
+    r = get_x(l, m)
+    s = get_y(l, m)
+    code1 = (["x1", "x16", "y4"], ["x4", "x13", "y1"])
+    A = sumMat([mat(t) for t in code1[0]])
+    B = sumMat([mat(t) for t in code1[1]])
+    k, d = Get_kd_BBCode(gap, A, B, l, m)
 
-print(f"code with {codeStr(code1)} has n: {2*l*m}, k: {k}, d: {d}")
-os.system(f"rm *.mtx")
+    print(f"code with {codeStr(code1)} has n: {2*l*m}, k: {k}, d: {d}")
+    os.system(f"rm *.mtx")
 
-gap = start([gap_path, "-L", "workplace", "-q", "-b"])
-l, m = 12, 12
-r = get_x(l, m)
-s = get_y(l, m)
-code1 = (["x1", "x2", "y9"], ["x3", "y5", "y10"])
-A = sumMat([mat(t) for t in code1[0]])
-B = sumMat([mat(t) for t in code1[1]])
-k, d = Get_kd_BBCode(gap, A, B, l, m)
+    gap = start([gap_path, "-L", "workplace", "-q", "-b"])
+    l, m = 12, 12
+    r = get_x(l, m)
+    s = get_y(l, m)
+    code1 = (["x1", "x2", "y9"], ["x3", "y5", "y10"])
+    A = sumMat([mat(t) for t in code1[0]])
+    B = sumMat([mat(t) for t in code1[1]])
+    k, d = Get_kd_BBCode(gap, A, B, l, m)
 
-print(f"code with {codeStr(code1)} has n: {2*l*m}, k: {k}, d: {d}")
+    print(f"code with {codeStr(code1)} has n: {2*l*m}, k: {k}, d: {d}")

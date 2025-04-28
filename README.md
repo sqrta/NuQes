@@ -8,7 +8,7 @@ pip install -r requirements.txt
 ```
 
 This framework also use [gap](https://www.gap-system.org/) system to compute the distance of large-size QEC codes.
-Install gap following its [installation tutorial](https://www.gap-system.org/install/) and set the path to the executable `gap` file is installed by modifying the file `BBcodeSearch/distance/gap_path.py`.
+Install gap following its [installation tutorial](https://www.gap-system.org/install/) and set the path to the executable `gap` file is installed by modifying the file `BBcodeSearch/search/gap_path.py`.
 
 You need to call your LLM by defining `class LLM._draw_sample(self, prompt: str) -> str` in `funsearch/implementation/sampler.py`, where `prompt` is the input to the LLM. Your `LLM._draw_sample` should return a valid pure python function in the python string format.
 
@@ -20,7 +20,7 @@ You need to call your LLM by defining `class LLM._draw_sample(self, prompt: str)
 
 Compute the distance of the [[170,16,10]] and the [[288,12,22]] codes in the paper
 ```
-cd BBcpdeSearch/distance
+cd BBcpdeSearch/search
 python codeD.py
 cd ../../
 ```
@@ -58,7 +58,7 @@ cd QLegoCodes
 python benchEval.py
 ```
 
-## Usage QECC Search with FunSearch
+## Usage: QECC Search with FunSearch
 
 This repository leverages a customized fork of FunSearch, originally developed by Google DeepMind and available [here](https://github.com/google-deepmind/funsearch), to automate the search for effective heuristic functions in Bivariate Bicycle code discovery.
 
@@ -173,3 +173,12 @@ Specifies initial implementations to seed the search.
 - **Fetch Result:** to access the best program found in each island during the search, modify the `sample` method in the `Sampler` class (`funsearch/implementation/sampler.py`). Use:
     - `self._database._best_score_per_island[Island_index]`
     - `self._database._best_program_per_island[Island_index]`
+
+#### Search with the generated heuristic function
+
+Put the heuristic function with the highest score generated through FunSearch in the file `BBcpdeSearch/search/Priority.py` and 
+```
+cd BBcpdeSearch/search
+python search.py [l] [m]
+```
+to search for BB codes with specified `l` and `m`
