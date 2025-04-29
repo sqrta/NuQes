@@ -168,7 +168,7 @@ def pruneTerm(Terms, l, m):
 
 
 def search_BBcode(l, m, countA, countB, kthres=4, init=0):
-    filename = f"good_log_{l}_{m}_count{countA}{countB}"
+    filename = f"good_code_{l}_{m}.txt"
     ri, rj = init, 0
     if ri == 0 and rj == 0:
         with open(filename, "w") as f:
@@ -235,9 +235,9 @@ def search_BBcode(l, m, countA, countB, kthres=4, init=0):
             if True and goodC(n, k, d):
                 # found.add((n,k,d))
 
-                f.write((f"i:{i}, good with n: {n}, k: {k}, d: {d}, r: {r} "))
+                f.write((f"n: {n}, k: {k}, d: {d}, r: {r} code from: "))
                 f.write(
-                    f"{'+'.join([PowStr(a1) for a1 in aterm])}, {'+'.join([PowStr(a1) for a1 in bterm])}, {l}, {m}\n"
+                    f"A: {'+'.join([PowStr(a1) for a1 in aterm])}, B: {'+'.join([PowStr(a1) for a1 in bterm])}\n"
                 )
             if k != 0:
                 count += 1

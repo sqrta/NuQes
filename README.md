@@ -181,4 +181,4 @@ Put the heuristic function with the highest score generated through FunSearch in
 cd BBcpdeSearch/search
 python search.py [l] [m]
 ```
-to search for BB codes with specified `l` and `m`
+to search for BB codes with specified `l` and `m`. The result will be written into a file `good_code_{l}_{m}.txt` in the same folder
